@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import {
@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { blue, orange, purple } from "@mui/material/colors";
 import CustomButton from "./components/CustomButton";
+import {BankFiles} from "./utils/types"
 
 function App() {
   const theme = createTheme({
@@ -20,6 +21,22 @@ function App() {
       },
     },
   });
+
+  const [bankFiles, setBankFiles] = useState<BankFiles>({});
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files) return;
+
+    const name = event.target.name;
+    const file = event.target.files[0];
+    setBankFiles((prev) => {
+      return {
+        ...prev,
+        [name]: file,
+      };
+    });
+
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -37,15 +54,15 @@ function App() {
           <CardContent>
             <Grid container justifyContent="space-between">
               <Grid item>
-                <CustomButton color={orange[500]}><b>Discover</b></CustomButton>
+                <CustomButton color={orange[500]} name="discover" onChange={handleFileChange}><b>Discover</b></CustomButton>
               </Grid>
 
               <Grid item>
-              <CustomButton color={blue[500]}><b>Chase</b></CustomButton>
+              <CustomButton color={blue[500]} name="chase" onChange={handleFileChange}><b>Chase</b></CustomButton>
               </Grid>
 
               <Grid item>
-              <CustomButton color={purple[500]}><b>Apple</b></CustomButton>
+              <CustomButton color={purple[500]} name="apple" onChange={handleFileChange}><b>Apple</b></CustomButton>
               </Grid>
 
             </Grid>
