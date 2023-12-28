@@ -6,7 +6,7 @@ export type Transaction = {
 };
 
 export type CardData = {
-  discover: string;
-  chase: string;
-  apple: string;
-};
+  discover: string | null;
+  chase: string | null;
+  apple: string | null;
+}
