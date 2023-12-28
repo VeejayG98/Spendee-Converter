@@ -11,4 +11,6 @@ export type BankFiles = {
   apple?: File | null;
 };
 
+export type Progress = "initial" | "submit" | "download";
+
 export type CSVData = { [key: string]: string };

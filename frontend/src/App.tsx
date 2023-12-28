@@ -11,7 +11,9 @@ import {
 } from "@mui/material";
 import { blue, orange, purple } from "@mui/material/colors";
 import CustomButton from "./components/CustomButton";
-import {BankFiles} from "./utils/types"
+import { BankFiles, Progress, Transaction } from "./utils/types";
+import { readFiles } from "./utils/utils";
+import ProgressButton from "./components/ProgressButton";
 
 function App() {
   const theme = createTheme({
@@ -23,6 +25,8 @@ function App() {
   });
 
   const [bankFiles, setBankFiles] = useState<BankFiles>({});
+  const [downloadData, setDownloadData] = useState<Transaction[]>([]);
+  const [progress, setProgress] = useState<Progress>('initial');
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files) return;
@@ -36,7 +40,29 @@ function App() {
       };
     });
 
+    setProgress("submit");
   };
+
+  const handleSubmit = async (event: React.MouseEvent) => {
+    event.preventDefault();
+
+    if (Object.keys(bankFiles).length === 0) return;
+
+    const csvData = await readFiles(bankFiles);
+
+    const response = await fetch("http://localhost:3001/api/upload_csv", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(csvData),
+    });
+
+    const jsonData = await response.json();
+    setDownloadData(jsonData);
+    setProgress("download");
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -54,18 +80,45 @@ function App() {
           <CardContent>
             <Grid container justifyContent="space-between">
               <Grid item>
-                <CustomButton color={orange[500]} name="discover" onChange={handleFileChange}><b>Discover</b></CustomButton>
+                <CustomButton
+                  color={orange[500]}
+                  name="discover"
+                  onChange={handleFileChange}
+                >
+                  <b>Discover</b>
+                </CustomButton>
               </Grid>
 
               <Grid item>
-              <CustomButton color={blue[500]} name="chase" onChange={handleFileChange}><b>Chase</b></CustomButton>
+                <CustomButton
+                  color={blue[500]}
+                  name="chase"
+                  onChange={handleFileChange}
+                >
+                  <b>Chase</b>
+                </CustomButton>
               </Grid>
 
               <Grid item>
-              <CustomButton color={purple[500]} name="apple" onChange={handleFileChange}><b>Apple</b></CustomButton>
+                <CustomButton
+                  color={purple[500]}
+                  name="apple"
+                  onChange={handleFileChange}
+                >
+                  <b>Apple</b>
+                </CustomButton>
               </Grid>
-
             </Grid>
+            <ProgressButton progress={progress} onClick={handleSubmit} downloadData={downloadData}/>
+            {/* {progress === "submit" ? (
+              <div style={{display: "flex", marginTop: 10}}>
+                <Button color="success" variant="contained" onClick={handleSubmit}>
+                  Submit
+                </Button>
+              </div>
+            ) : (
+              <></>
+            )} */}
           </CardContent>
         </Card>
       </div>
