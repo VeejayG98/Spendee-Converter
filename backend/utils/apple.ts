@@ -14,7 +14,9 @@ export default function processApple(data: string | null): Transaction[] {
     category: 4,
   };
 
-  for (let i = 1; i < rows.length - 1; i++) {
+  for (let i = 1; i < rows.length; i++) {
+    if (rows[i].length === 0) continue;
+    
     const cells = rows[i].split(",");
 
     const row: Transaction = {
