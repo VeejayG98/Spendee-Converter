@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(cors());
 
 
-app.post("/api/upload_csv", async (req: Request, res: Response) => {
+app.post("/api/upload_csv", (req: Request, res: Response) => {
   const cardData: CardData = req.body;
   const discoverData: Transaction[] = processDiscover(cardData.discover);
   const chaseData: Transaction[] = processChase(cardData.chase);
