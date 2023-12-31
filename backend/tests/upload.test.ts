@@ -1,5 +1,5 @@
 import supertest from "supertest";
-import app from "../server";
+import app, { server } from "../server";
 import { CardData } from "../types";
 import {
   apiUploadTestingData,
@@ -21,6 +21,11 @@ jest.mock("../utils/apple", () => {
 });
 
 describe("/api/upload_csv POST endpoint", () => {
+  
+  afterAll(() => {
+    server.close();
+  });
+
   it("it should return a sorted JSON data", async () => {
     const mockData: CardData = {
       discover: discoverTestData.input,

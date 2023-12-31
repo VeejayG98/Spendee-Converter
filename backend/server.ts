@@ -32,6 +32,6 @@ app.post("/api/upload_csv", (req: Request, res: Response) => {
   res.json(jsonData)
 });
 
-app.listen(3001);
+export const server = app.listen(3001);
 
 export default app;
